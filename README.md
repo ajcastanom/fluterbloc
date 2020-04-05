@@ -1,6 +1,6 @@
-# flutterblocfirebase
+# flutterbloc
 
-Project example for Flutter with Firebase implementing the BLoC pattern
+Project example for Flutter with BLoC pattern
 
 ## Getting Started
 
