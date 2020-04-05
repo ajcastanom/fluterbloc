@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterblocfirebase/src/blocs/stopwatch_bloc.dart';
+import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_bloc.dart';
+import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_event.dart';
+import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_state.dart';
 import 'package:flutterblocfirebase/src/widgets/action_button.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_builder.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_listener.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_provider.dart';
 
 class StopwatchWithGlobalStatePage extends StatelessWidget {
   static final routeName = 'stopwatchWithGlobalState';
@@ -40,9 +39,8 @@ class StopwatchScaffold extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: BlocListener<StopwatchEvent, StopwatchState>(
-        bloc: stopwatchBloc,
-        listener: (BuildContext context, StopwatchState state) {
+      body: BlocListener<StopwatchBloc, StopwatchState>(
+        listener: (context, state) {
           if (state.isSpecial) {
             Scaffold.of(context).showSnackBar(
               SnackBar(
@@ -59,9 +57,8 @@ class StopwatchScaffold extends StatelessWidget {
           }
         },
         child: Center(
-          child: BlocBuilder(
-            bloc: stopwatchBloc,
-            builder: (BuildContext context, StopwatchState state) {
+          child: BlocBuilder<StopwatchBloc, StopwatchState>(
+            builder: (context, state) {
               return Text(
                 state.timeFormated,
                 style: TextStyle(
@@ -76,9 +73,8 @@ class StopwatchScaffold extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: EdgeInsets.all(16),
-        child: BlocBuilder(
-          bloc: stopwatchBloc,
-          condition: (StopwatchState previousState, StopwatchState currentState) {
+        child: BlocBuilder<StopwatchBloc, StopwatchState>(
+          condition: (previousState, currentState) {
             return previousState.isInitial != currentState.isInitial ||
                    previousState.isRunning != currentState.isRunning;
           },

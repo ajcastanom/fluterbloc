@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterblocfirebase/src/blocs/counter_bloc.dart';
-import 'package:flutterblocfirebase/src/blocs/stopwatch_bloc.dart';
+import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_bloc.dart';
+import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_event.dart';
+import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_state.dart';
 import 'package:flutterblocfirebase/src/pages/stopwatch_with_global_state_page.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_builder.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_listener.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_listener_tree.dart';
-//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_provider.dart';
 
 import 'counter_with_global_state_page.dart';
 
@@ -22,11 +20,10 @@ class HomePage extends StatelessWidget {
     final counterBloc = BlocProvider.of<CounterBloc>(context);
     final stopwatchBloc = BlocProvider.of<StopwatchBloc>(context);
 
-    return BlocListenerTree(
-      blocListeners: [
-        BlocListener<CounterEvent, int>(
-          bloc: counterBloc,
-          listener: (BuildContext context, int state) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CounterBloc, int>(
+          listener: (context, state) {
             if (state == 10) {
               showDialog(
                 context: context,
@@ -37,9 +34,8 @@ class HomePage extends StatelessWidget {
             }
           }
         ),
-        BlocListener<StopwatchEvent, StopwatchState>(
-            bloc: stopwatchBloc,
-            listener: (BuildContext context, StopwatchState state) {
+        BlocListener<StopwatchBloc, StopwatchState>(
+            listener: (context, state) {
               if (state.time.inMilliseconds == 10000) {
                 if (!Navigator.of(context).canPop()) {
                   _pushPage(context, StopwatchWithGlobalStatePage.routeName);
@@ -66,9 +62,8 @@ class HomePage extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.add_circle_outline),
               title: Text('Counter'),
-              subtitle: BlocBuilder(
-                bloc: counterBloc,
-                builder: (BuildContext context, int state) {
+              subtitle: BlocBuilder<CounterBloc, int>(
+                builder: (context, state) {
                   return Text('$state');
                 },
               ),
@@ -93,9 +88,8 @@ class HomePage extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.add_circle_outline),
               title: Text('Stopwatch'),
-              subtitle: BlocBuilder(
-                bloc: stopwatchBloc,
-                builder: (BuildContext context, StopwatchState state) {
+              subtitle: BlocBuilder<StopwatchBloc, StopwatchState>(
+                builder: (context, state) {
                   return Text('${state.timeFormated}');
                 },
               ),
