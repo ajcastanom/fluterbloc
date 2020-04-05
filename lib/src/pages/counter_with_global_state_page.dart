@@ -13,32 +13,13 @@ class CounterWithGlobalStatePage extends StatelessWidget {
   }
 }
 
-class CounterWithLocalStatePage extends StatefulWidget {
+class CounterWithLocalStatePage extends StatelessWidget {
   static final routeName = 'counterWithLocalState';
-
-  @override
-  _CounterWithLocalStatePageState createState() => _CounterWithLocalStatePageState();
-}
-
-class _CounterWithLocalStatePageState extends State<CounterWithLocalStatePage> {
-  CounterBloc _counterBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _counterBloc = CounterBloc();
-  }
-
-  @override
-  void dispose() {
-    _counterBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CounterBloc>(
-      bloc: _counterBloc,
+      builder: (context) => CounterBloc(),
       child: CounterScaffold(title: 'Counter - Local State'),
     );
   }

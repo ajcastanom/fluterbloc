@@ -14,32 +14,13 @@ class StopwatchWithGlobalStatePage extends StatelessWidget {
   }
 }
 
-class StopwatchWithLocalStatePage extends StatefulWidget {
+class StopwatchWithLocalStatePage extends StatelessWidget {
   static final routeName = 'stopwatchWithLocalState';
-
-  @override
-  _StopwatchWithLocalStatePageState createState() => _StopwatchWithLocalStatePageState();
-}
-
-class _StopwatchWithLocalStatePageState extends State<StopwatchWithLocalStatePage> {
-  StopwatchBloc _stopwatchBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _stopwatchBloc = StopwatchBloc();
-  }
-
-  @override
-  void dispose() {
-    _stopwatchBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      bloc: _stopwatchBloc,
+      builder: (context) => StopwatchBloc(),
       child: StopwatchScaffold(title: 'Stopwatch - Local State'),
     );
   }

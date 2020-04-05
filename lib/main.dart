@@ -12,13 +12,10 @@ import 'package:flutterblocfirebase/src/pages/stopwatch_with_global_state_page.d
 void main() {
   BlocSupervisor.delegate = MyBlocDelegate();
 
-  final counterBloc = CounterBloc();
-  final stopwatchBloc = StopwatchBloc();
-
   runApp(BlocProviderTree(
     blocProviders: [
-      BlocProvider<CounterBloc>(bloc: counterBloc,),
-      BlocProvider<StopwatchBloc>(bloc: stopwatchBloc,)
+      BlocProvider<CounterBloc>(builder: (context) => CounterBloc(),),
+      BlocProvider<StopwatchBloc>(builder: (context) => StopwatchBloc(),)
     ],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,

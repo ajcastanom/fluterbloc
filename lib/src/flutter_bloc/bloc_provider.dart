@@ -1,41 +1,97 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutterblocfirebase/src/bloc/bloc.dart';
 
-class BlocProvider<T extends Bloc<dynamic, dynamic>> extends InheritedWidget {
+typedef BlocProviderBuilder<T extends Bloc<dynamic, dynamic>> = T Function(
+  BuildContext context
+);
 
-  final T bloc;
+class BlocProvider<T extends Bloc<dynamic, dynamic>> extends StatefulWidget {
+  final BlocProviderBuilder<T> builder;
 
   final Widget child;
 
-  BlocProvider({
+  final bool dispose;
+
+  const BlocProvider({
     Key key,
-    @required this.bloc,
+    @required this.builder,
+    this.dispose = true,
     this.child
-  }) : assert(bloc != null),
-       super(key: key, child: child);
+  }) : assert(builder != null),
+       super(key: key);
+
+  @override
+  _BlocProviderState<T> createState() => _BlocProviderState<T>();
 
   static T of<T extends Bloc<dynamic, dynamic>>(BuildContext context) {
-    final BlocProvider<T> provider = context
-      .getElementForInheritedWidgetOfExactType<BlocProvider<T>>()?.widget;
+    final _InheritedBlocProvider<T> provider = context
+        .getElementForInheritedWidgetOfExactType<_InheritedBlocProvider<T>>()?.widget;
 
     if (provider == null) {
       throw FlutterError(
-        "BlocProvider.of() called with a context that does not contain a Bloc of type $T."
+          "BlocProvider.of() called with a context that does not contain a Bloc of type $T."
       );
     }
 
     return provider?.bloc;
   }
 
+  static Type _typeOf<T>() => T;
+
   BlocProvider<T> copyWith(Widget child) {
-    return BlocProvider<T>(
+    return BlocProvider<T> (
       key: key,
-      bloc: bloc,
-      child: child
+      builder: builder,
+      child: child,
     );
   }
+}
 
-  static Type _typeOf<T>() => T;
+class _BlocProviderState<T extends Bloc<dynamic, dynamic>> extends State<BlocProvider<T>> {
+  T _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = widget.builder(context);
+    if (_bloc == null) {
+      throw FlutterError(
+        'BlocProvider\'s builder method did not return a Bloc.'
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    if(widget.dispose ?? true) {
+      _bloc.dispose();
+    }
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _InheritedBlocProvider(
+      bloc: _bloc,
+      child: widget.child,
+    );
+  }
+}
+
+
+class _InheritedBlocProvider<T extends Bloc<dynamic, dynamic>> extends InheritedWidget {
+
+  final T bloc;
+
+  final Widget child;
+
+  _InheritedBlocProvider({
+    Key key,
+    @required this.bloc,
+    this.child
+  }) : assert(bloc != null),
+       super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
