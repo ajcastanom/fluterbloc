@@ -1,8 +1,9 @@
 
-import 'package:flutterblocfirebase/src/bloc/transition.dart';
+import 'package:bloc/bloc.dart';
+//import 'package:flutterblocfirebase/src/bloc/transition.dart';
 
-import 'bloc.dart';
-import 'bloc_delegate.dart';
+//import 'bloc.dart';
+//import 'bloc_delegate.dart';
 
 class MyBlocDelegate extends BlocDelegate {
   @override

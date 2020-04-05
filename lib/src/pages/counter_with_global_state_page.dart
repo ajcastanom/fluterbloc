@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterblocfirebase/src/blocs/counter_bloc.dart';
-import 'package:flutterblocfirebase/src/flutter_bloc/bloc_builder.dart';
-import 'package:flutterblocfirebase/src/flutter_bloc/bloc_provider.dart';
 import 'package:flutterblocfirebase/src/widgets/action_button.dart';
+//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_builder.dart';
+//import 'package:flutterblocfirebase/src/flutter_bloc/bloc_provider.dart';
 
 class CounterWithGlobalStatePage extends StatelessWidget {
   static final routeName = 'counterWithGlobalState';
