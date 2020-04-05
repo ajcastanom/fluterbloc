@@ -5,6 +5,7 @@ import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_bloc.dart';
 import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_event.dart';
 import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_state.dart';
 import 'package:flutterblocfirebase/src/pages/stopwatch_with_global_state_page.dart';
+import 'package:flutterblocfirebase/src/pages/theme_selector_page.dart';
 
 import 'counter_with_global_state_page.dart';
 
@@ -19,6 +20,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final counterBloc = BlocProvider.of<CounterBloc>(context);
     final stopwatchBloc = BlocProvider.of<StopwatchBloc>(context);
+
+    final chipColorShade =
+        Theme.of(context).brightness == Brightness.light ? 300 : 800;
 
     return MultiBlocListener(
       listeners: [
@@ -47,6 +51,12 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Center(child: Text('BLoC example')),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.palette),
+              onPressed: () => _pushPage(context, ThemeSelectorPage.routeName),
+            )
+          ],
         ),
         body: ListView(
           children: <Widget>[
@@ -55,7 +65,7 @@ class HomePage extends StatelessWidget {
               title: Text('Counter'),
               trailing: Chip(
                 label: Text('Local State'),
-                backgroundColor: Colors.blue[800],
+                backgroundColor: Colors.blue[chipColorShade],
               ),
               onTap: () => _pushPage(context, CounterWithLocalStatePage.routeName),
             ),
@@ -69,7 +79,7 @@ class HomePage extends StatelessWidget {
               ),
               trailing: Chip(
                 label: Text('Global State'),
-                backgroundColor: Colors.green[800],
+                backgroundColor: Colors.green[chipColorShade],
               ),
               onTap: () => _pushPage(context, CounterWithGlobalStatePage.routeName),
               onLongPress: () {
@@ -77,16 +87,16 @@ class HomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.add_circle_outline),
+              leading: Icon(Icons.timer),
               title: Text('Stopwatch'),
               trailing: Chip(
                 label: Text('Local State'),
-                backgroundColor: Colors.blue[800],
+                backgroundColor: Colors.blue[chipColorShade],
               ),
               onTap: () => _pushPage(context, StopwatchWithLocalStatePage.routeName),
             ),
             ListTile(
-              leading: Icon(Icons.add_circle_outline),
+              leading: Icon(Icons.timer),
               title: Text('Stopwatch'),
               subtitle: BlocBuilder<StopwatchBloc, StopwatchState>(
                 builder: (context, state) {
@@ -95,7 +105,7 @@ class HomePage extends StatelessWidget {
               ),
               trailing: Chip(
                 label: Text('Global State'),
-                backgroundColor: Colors.green[800],
+                backgroundColor: Colors.green[chipColorShade],
               ),
               onTap: () => _pushPage(context, StopwatchWithGlobalStatePage.routeName),
               onLongPress: () {

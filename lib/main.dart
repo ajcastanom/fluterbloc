@@ -1,32 +1,26 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterblocfirebase/src/blocs/counter_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutterblocfirebase/src/blocs/my_bloc_delegate.dart';
-import 'package:flutterblocfirebase/src/blocs/stopwatch/stopwatch_bloc.dart';
-import 'package:flutterblocfirebase/src/pages/counter_with_global_state_page.dart';
-import 'package:flutterblocfirebase/src/pages/home_page.dart';
-import 'package:flutterblocfirebase/src/pages/stopwatch_with_global_state_page.dart';
+import 'package:flutterblocfirebase/src/repositories/preferences_repository_impl.dart';
+
+import 'src/app.dart';
+import 'src/blocs/preferences/preferences_bloc.dart';
 
 void main() {
+  // add this, and it should be the first line in main method
+  WidgetsFlutterBinding.ensureInitialized();
+
   BlocSupervisor.delegate = MyBlocDelegate();
 
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider<CounterBloc>(builder: (context) => CounterBloc(),),
-      BlocProvider<StopwatchBloc>(builder: (context) => StopwatchBloc(),)
-    ],
-    child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      initialRoute: HomePage.routeName,
-      routes: {
-        HomePage.routeName: (BuildContext context) => HomePage(),
-        CounterWithLocalStatePage.routeName: (BuildContext context) => CounterWithLocalStatePage(),
-        CounterWithGlobalStatePage.routeName: (BuildContext context) => CounterWithGlobalStatePage(),
-        StopwatchWithGlobalStatePage.routeName: (BuildContext context) => StopwatchWithGlobalStatePage(),
-        StopwatchWithLocalStatePage.routeName: (BuildContext context) => StopwatchWithLocalStatePage()
-      },
-    ),
-  ));
+  final preferencesRepository = PreferencesRepositoryImpl();
+  final preferencesBloc = PreferencesBloc(preferencesRepository: preferencesRepository);
+
+  preferencesBloc.state
+    .firstWhere((state) => state is PreferencesLoaded)
+    .then((_) => runApp(App(
+      preferencesRepository: preferencesRepository,
+      preferencesBloc: preferencesBloc,
+    )));
+
+  preferencesBloc.dispatch(LoadPreferences());
 }
